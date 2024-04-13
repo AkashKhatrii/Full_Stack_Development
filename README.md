@@ -32,6 +32,7 @@ Here, `sum` and `sub` are callback functions passed as an argument to `calculate
 
 2. Asynchronous
 > Opposite of asynchronous. Happens in parts. Multiple things are context switching with each other.
+> Basically, we give a task to someone else to finish it and return us the result.
 
 ##### Async functions vs sync functions
 Human brain and body is single threaded.
@@ -91,7 +92,113 @@ How is this asynchronous?
 4. Why still in the `Callback Queue` and not directly execute it? because JS thread might be busy with other things, and until and unless it finishes those, it cannot execute other things.
 5. When the thread is idle, the `Event loop` sees if any func is waiting in the `Callback Queue`, if yes, it is executed.
 
+#### Promises
+> It's just syntactic sugar, and still uses callbacks under the hood.
+> It is just a class that makes callbacks and async functions slightly more readable.
+> Whenevr, we create it, we need to pass in a function as the frst argument which has resolve as the first argument.
 
+##### Without Promise
+```javascript
 
+const fs = require('fs');
+
+// my own asynchronous function
+function KiratsReadFile(cb){
+    fs.readFile('a.txt', 'utf-8', function(err, data){
+        cb(data);
+    })
+}
+
+// callback function to call
+function onDone(data){
+    console.log(data);
+}
+
+kiratsReadFile(onDone);
+```
+
+1. Here, we are giving a task to another thread (i.e an async function).
+2. When that async function has completed its task, it executes the callback we passed i.e. prints the data on the console.
+
+##### With promise
+```javascript
+const fs = require('fs');
+
+// my own asynchronous function
+function KiratsReadFile(){
+    return new Promise(function(resolve){
+        fs.readFile('a.txt', 'utf-8', function(err, data){
+            resolve(data);
+        })
+    })
+}
+
+// callback function to call
+function onDone(data){
+    console.log(data);
+}
+
+kiratsReadFile().then(onDone)
+```
+1. Here also, we are creating an async function, and when called, it immediately returns a promise, which may or may not be resolved later.
+2. If resolved, it passes the data to the callee and then the callee can do `.then(cb)` to print the data.
+
+```javascript
+let p = new Promise(function(resolve){
+    // place for the writer of the async function to do their magic(eg.get ketchup) and call resolve at the end with data
+    resolve('hi there');
+})
+
+p.then(() => {
+    console.log(p);
+})
+```
+
+**Our own asynchronous functions will mostly be wrappers around inherent async functions like `setTimeOut` or `fetch`, etc.**
+
+#### Async await
+
+```javascript
+function kiratsAsyncFunction(){
+    let p = new Promise(function(resolve){
+        // do some async logic here
+
+        setTimeout(function(){
+            resolve('hi there!');
+        }, 3000);
+
+    })
+    return p;
+}
+
+async function main(){
+    // no callbacks, no .then syntax
+    // kiratsAsyncFunction().then(function(value){
+    //    console.log(value);
+    // })
+
+    let value = await kiratsAsyncFunction();
+    console.log(value);
+    console.log('hi there1');
+}
+
+main();
+console.log('after main');
+```
+
+> When we call `main()`, the function calls `kiratsAsyncFunction()` and waits until the promise is resolved, and when resolved, the variable `value` will contain the result of the promise.
+> Then, the line after the variable `value` will be executed and `hi there1` will be printed.
+> Does this mean, the thread is stopped until the promise resolves? No! After calling `main()`, the line after it is executed, i.e `after main` is printed and whenever the promise is resolved, then `hi there!` is printed. 
+> That means, the rest of the program continues executing. 
+
+The console will look like:
+>after main
+>hello there!
+>hello there1
+
+**Important**
+1. An await can only be used inside an async function.
+2. Any function that needs to use await, needs to be async.
+3. Rather than using the .then syntax, we add await before and get the final value in the variable.
 
   
