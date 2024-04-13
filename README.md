@@ -41,3 +41,26 @@
 3. Status code
 
 
+### Express
+1. To create a HTTP server, we use Express library.
+2. To use Express, create a folder, in my case `Express`, `npm init` in the folder, that will create a `package.json` in our folder.
+3. To bring *express* library onto our local achine, we do `npm install express`.
+4. We create an application which listens to http requests (basically our http server) by doing `const app = express()`
+5. Then we make this server listen to requests on a specific port, in this case, `3000` as `app.listen(3000, function(){ console.log('This is a server!')})`
+
+**A simple server**
+```javascript
+const fs = require("fs");
+const express = require("express")
+const port = 3000
+
+const app = express();
+app.get('/', function(req, res){
+    res.send('Hello World!');
+})
+
+app.listen(port, function(){
+    console.log('This is a new server!');
+})
+```
+
