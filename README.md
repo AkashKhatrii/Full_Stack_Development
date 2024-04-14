@@ -64,3 +64,15 @@ app.listen(port, function(){
 })
 ```
 
+**Important**
+- Express doesn't hande the `body` of the response, i.e if we try to print `req.body`, it will give `undefined`. Weird! But it's how express is built.
+- To deal with this, external libraries are used. For eg. `body-parser`.
+
+
+##### query-params
+`http://localhost:3000/conversations?message=123&b=1`, every `key=value` pair after `?` in the url are called query parameters.
+
+###### What is the use of query-params?
+- Whenever we are sending a `GET` request, there is no easy wa for us to pass some body or data, so query-params are used in such cases.
+
+Eg. `http://localhost:3000/messages?sort=-1`, sorts the results in descending order.
