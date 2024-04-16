@@ -76,3 +76,80 @@ app.listen(port, function(){
 - Whenever we are sending a `GET` request, there is no easy wa for us to pass some body or data, so query-params are used in such cases.
 
 Eg. `http://localhost:3000/messages?sort=-1`, sorts the results in descending order.
+
+#### Middlewares
+
+1. How do we do auth checks?
+2. Ensure input by the user is valid.
+
+Ex. without middlewares
+
+```javascript
+app.get('/health-checkup', function (req, res){
+    // do health checks here
+
+    const kidneyId = req.query.kidneyId;
+    const username = req.headers.username;
+    const password = req.headers.password;
+
+    if (username != 'akash' || password != 'pass'){
+        res.status(403).json({
+            msg: 'user doesn't exist',
+        })
+        return;
+    }
+
+    if (kidneyId != 1 && kidneyId != 2){
+        res.status(411).json({
+            msg: 'wrong inputs',
+        })
+        return;
+    }
+
+    res.send('Your heart is healthy');
+})
+```
+
+**What if all my routes have this logic of validating inputs and performing checks?**
+
+- create wrapper fns `usernameValidator` and `kidneyValidator` and call them in the routes.
+- But, still, it's a lot of code, i.e calling these in everyroute and performing checks
+
+**Then, what is the solution? -> `Middleware`**
+
+```javascript
+function userMiddleware(req, res, next){
+    if (username != 'akash' || password != 'pass'){
+        res.status(403).json({
+            msg: 'user doesn't exist',
+        })
+        return;
+    } else{
+        next();
+    }
+}
+
+function kidneyMiddleware(req, res, next){
+    if (kidneyId != 1 && kidneyId != 2){
+        res.status(411).json({
+            msg: 'wrong inputs',
+        })
+        return;
+    } else {
+        next();
+    }
+}
+
+app.get('/health-checkup', userMiddleware, kidneyMiddleware, function (req, res){
+    // do something here
+
+    res.send('Your heart is healthy.');
+})
+```
+
+**Few Important points**
+1. You can pass as many callback functions to route handlers as you want.
+2. `function (req, res, next)`, here next is called when all the checks are performed and we are good to go! Basically, `next()` calls the next middleware after the current one.
+3. We odn't need `next` in the last callback function.
+4. If we do `app.use(some_middleware)`, then this `some_middleware` middleware will be executed for every request.
+
