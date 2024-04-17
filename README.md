@@ -153,3 +153,84 @@ app.get('/health-checkup', userMiddleware, kidneyMiddleware, function (req, res)
 3. We odn't need `next` in the last callback function.
 4. If we do `app.use(some_middleware)`, then this `some_middleware` middleware will be executed for every request.
 
+
+> Our backend server is out on the internet, anyone can hit it, and therefore it's necessary to perform input validation checks to make sure the input is in the format which server can handle.
+> If the input is not in that format, then the server will crash and it will reveal a lot of private info to the user. i.e Someone can read the exception caused by server.
+
+**One way to handle these exceptions is a middleware called global catches**
+- This middleware is added at the end of all the routes and it takes 4 parameters.
+
+```javascript
+app.use(function(err, req, res, next){
+    res.json({
+        msg: 'Sorry something is up with the server.'
+    })
+})
+```
+
+- If there is some exception caused by any of the routes above this, it catches them and sends this response.
+
+
+### Input Validation
+
+##### How can you do better input validation?
+```javascript
+if (kidneyId != 1 && kidneyId != 2){
+    return false;
+}
+```
+
+- This is very hard to scale. What if we expect a complicated input?
+- What if we need to perform multiple checks? It becomes messy!
+
+**How do we do input validation then? -> Zod!**
+
+- Zod is very popular and is used for input validation.
+
+```javascript
+const schema = zod.array(zod.number())
+
+// {
+//      email: string => email
+//      password: atleast 8 charaacters
+//      country: "IN", "US"
+// }
+
+const registerSchema = zod.object({
+    email: zod.string().email(),
+    password: zod.string().min(8),
+    country: zod.literal("IN").or(zod.literal("US")),
+    kidneys: zod.array(zod.number())
+})
+
+app.get('/', function (req, res){
+    res.send('This is zod tutorial!')
+})
+
+app.post('/health-checkup', function (req, res){
+
+    const kidneys = req.body.kidneys;
+    // const kidneysLength = kidneys.length;
+    const response = schema.safeParse(kidneys);
+
+    if (!response.success){
+        res.json({
+            msg: 'Invalid input'
+        })
+    } else {
+    res.send({
+        response
+    })
+}
+    
+})
+
+app.listen(3000, (req, res) => {
+    console.log('Listening on port 3000')
+})
+```
+
+Here, `schema` is the datatype we want our input should be of. `const schema = zod.array(zod.number())` creates a `schema` that we can use to check our input. Here, it checks, if th einput is an `array` of `numbers`.
+
+
+
