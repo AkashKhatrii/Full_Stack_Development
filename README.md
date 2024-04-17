@@ -232,5 +232,58 @@ app.listen(3000, (req, res) => {
 
 Here, `schema` is the datatype we want our input should be of. `const schema = zod.array(zod.number())` creates a `schema` that we can use to check our input. Here, it checks, if th einput is an `array` of `numbers`.
 
+### fetch API
+
+- Till now, we saw how to send `POST` requests from Postman, but, how do we send `POST` requests from the browser? -> `fetch` API!
+- Default behaviour of `fetch` is `GET`. Example:
+
+```javascript
+function getPerson(){
+    fetch('https://fakerapi.it/api/v1/persons')
+    .then(function (response){
+        response.json()
+        .then(function(finalData){
+            console.log(finalData);
+        })
+    })
+}
+```
+
+Here, `fetch` and `response.json()` both return a promise and we handle that using `then`
+
+An easier and more clean way to write this same function:
+```javascript
+async function getPerson(){
+    const response = await fetch('https://fakerapi.it/api/v1/persons')
+    const finalData = await response.json();
+    console.log(finalData);
+}
+```
+
+If we know, there is an async call to be made inside a function, make the function async and add await before all the async calls!
 
 
+### Authentication
+ 
+Some important concepts:
+1. `Hashing`: converting a string to some complicated gibberish. Every time a same string is provided, same hashed string is generated. This is how we are able to login on any server. Our hashed password is stored in the database, and when we provide our original password, it is hashed and this hash is checked with the stored hashed password in the database. **Hashing** is one way!
+2. `Encryption`: This is two way! We can convert the gibberish to the original string if we have the key.
+3. `JWT`: 
+    - JSON: It will work only for JSON inputs.
+    - Web: Maybe, it is used mostly in web, that's why.
+    - Token: It creates a token at the end. Anyone who has this token, can actually see the contents of it. (try on jwt.io)
+
+But, a token can only be verified by the creator of the token using `jwt.verify(token, secret)`, where `secret` is the string used by the creator to create the token.
+4. `Local Storage`: token is stored in the browser's local storage once the user logs in. And every subsequent request after that has this token in the headers.
+
+**One question: We know, that a jwt token can be decode by everyone, then what is someone sees our password through that?**
+Answer - When creating a jwt token, we don't use password, we just use username or some other field to create it. So, even if someone tries to decode it, they will just have our username visible. Basically, we don't use any sensitive data to generate tokens.
+
+##### Assignment:
+A website with 2 endpoints:
+1. `POST /sigin, Body - {username: string, password: string}` - returns a json web token with username encrypted.
+2. `GET /users Headers - Authorization header` - returns an array of all users if user is signed in (if token is correct). Returns 403 status code if not.
+
+This assignment is located at `./Express/jwt.js`
+
+ 
