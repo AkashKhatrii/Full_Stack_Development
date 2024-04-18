@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb+srv://akash:akash123@cluster0.adl9n.mongodb.net/full_stack?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect('mongodb+srv://<username>:<password>@cluster0.adl9n.mongodb.net/full_stack?retryWrites=true&w=majority&appName=Cluster0')
 
 const app = express()
 app.use(express.json())
