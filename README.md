@@ -286,4 +286,36 @@ A website with 2 endpoints:
 
 This assignment is located at `./Express/jwt.js`
 
- 
+**Quick Recap about JWTs**
+
+1. JWT to create tokens
+2. User gets back a token after the sigin request
+3. User sends back tokens in all authenticated requests.
+
+
+### Databases
+
+> Client cannot directly access database, it first sends the request to the backend and backend communicates with the database and sends the response. Only backend knows the credentials of the database!
+
+**Various types of databases**
+1. Graph DBs
+2. Vector DBs
+3. SQL DBs
+4. NoSQL DBs
+
+##### MongoDB
+1. MongoDB lets you create multiple databases.
+2. In each DB, it lets you create tables (collections).
+3. In each table, it lets you dump JSON data (documents).
+4. It is schemaless.
+
+**How to start?**
+1. Create a free instance by going to https://mongodb.com/
+2. Get your mongodb connection URL.
+3. Download mongoDB compass and try to explore the DB. 
+
+
+**How does the backend connect to the database? -> Using libraries!**
+1. `Express` lets u create an HTTP server.
+2. `jsonwebtokens` lets you create jwts.
+3. `Mongoose` lets you connect to your database. 
