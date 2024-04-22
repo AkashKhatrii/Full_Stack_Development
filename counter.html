@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div id="buttonParent">
+
+    </div>
+
+    <script>
+        let state = { // this is what we have to write in react
+            count: 0
+        }
+        
+        function onButtonClick(){ 
+            state.count ++;
+            buttonComponentRerender();
+        }
+
+        function buttonComponentRerender(){ // this will be done by react.
+            // taking the state, giving it to the component, getting it back, removing thijngs from dom, adding things, all is done by react
+            document.getElementById('buttonParent').innerHTML = '';
+            const component = buttonComponent(state.count);
+            document.getElementById('buttonParent').appendChild(component);
+
+            // Basically what this function does is
+            // first clear the dom
+            // create the new component
+            // put it back on the DOM
+        }
+
+        function buttonComponent(count){ // this we will write, how will our component look like
+            const button = document.createElement('button');
+            button.innerHTML = `Counter ${count}`;
+            button.setAttribute("onclick", "onButtonClick()");
+            return button
+        }
+
+        buttonComponentRerender()
+
+    </script>
+</body>
+</html>
