@@ -19,6 +19,13 @@
         function onButtonClick(){ 
             state.count ++;
             buttonComponentRerender();
+
+            // What is happening?
+            // whenever the state changes, we are re-rendering hte component to
+            // reflect the new state.
+            // In reality, react won't remove the entire element form the DOM
+            // and re-render it, instead it will compute the difference and 
+            // find what has changed and will only re-render that.
         }
 
         function buttonComponentRerender(){ // this will be done by react.
