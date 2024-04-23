@@ -132,3 +132,36 @@ Another example can be LinkedIn Topbar, for that, the state can look something l
 
 
 **You usually have to define all your components once, and then all you have to do is update the state of your app, React takes care of re-rendering your app.**
+
+
+**What is a JSX file?**
+
+- a JS file, inside which we can write both JS and xml.
+
+
+
+###### Counter React
+
+```javascript
+import React from "react";
+import './App.css'
+function App(){
+  const [count, setCount] = React.useState(0);
+
+  return (
+    <div>
+      <Button count={count} setCount={setCount}></Button>
+    </div>
+  )
+}
+
+function Button(props){
+  function onButtonClick(){
+    props.setCount(props.count + 1)
+  }
+
+  return <button onClick={onButtonClick}>Counter {props.count}</button>
+}
+
+export default App;
+```
