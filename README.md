@@ -311,3 +311,96 @@ function App(){
 ##### Custom Hooks
 - Just like useState, useEffect, you can write your own hooks
 - Only condition is - it should start with a `use`
+
+
+###### Single Page App
+- React lets us create single page applications, applications that do not require sending request again and again to fetch new pages. (Intuitive, as we render components based on conditions)
+
+
+#### Routing
+
+```javascript
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Dashboard } from './components/Dashboard'
+import { Landing } from '/components/Landing'
+
+function App(){
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Landing/>}>
+        <Route path='/dashboard' element={<Dashboard/>}>
+      </Routes>
+    </BrowserRouter>
+  )
+}
+```
+
+
+#### Context API
+- To avoid prop drilling (manually passing down props at each level)
+
+In the same file or somewhere else, create a context.
+```javascript
+import { createContext } form 'react';
+
+export const CounterContext = createContext(0);
+```
+
+Now, wrap anyone who wants to use this value (or context) inside a provider.
+
+
+###### What is a provider?
+- Something that provides the value
+
+```javascript
+<CounterContext.Provider value={count}>
+  {children}
+</CounterContext.Provider>
+```
+
+now, How to access the values inside a child
+
+```javascript
+
+function CountRenderer(){
+  const count = useContext(CountContext);
+
+  return (
+    <div>
+      {count}
+    </div>
+  )
+}
+```
+
+**Downside of Context API**
+- It still causes re-renders of components that do not use the state(context)
+- doesn't fix re-rendering, only fixes prop drilling
+
+
+#### State management using Recoil
+
+**What is state management?**
+- A cleaner way to store the state of your app.
+
+
+Until now, the cleanest thing you can do is use the Context API. It lets you teleport state.
+
+But there are better solutions that get rid of the problems that Context API has (unnecessary re-renders)
+
+
+##### Recoil 
+
+- Has a concept of an atom to store the state (count, todos, etc) (similar to useState)
+- An atom can be defined outside the component
+- Can be teleported to any component.
+
+
+**Things to learn:**
+1. RecoilRoot
+2. atom
+3. useRecoilState
+4. useRecoilValue
+5. useSetRecoilState
+6. selector
