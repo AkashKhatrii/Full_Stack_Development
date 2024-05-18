@@ -201,4 +201,57 @@ The console will look like:
 2. Any function that needs to use await, needs to be async.
 3. Rather than using the .then syntax, we add await before and get the final value in the variable.
 
-  
+
+### Namaste JavaScript
+
+##### How JavaScript works?
+- Everything in JavaScript happens inside an Execution Context
+- EC is like a big box with 2 components: `Memory` where all variables and functions are stored and `Code` where code is executed one line at a time.
+- JS is s synchronous single-threaded language.
+
+
+#### How JS code is executed?
+- When we run a JS code, EC is created.
+- It is created in 2 phases: `Creation` and `Code Execution`
+- In `Creation`, memory is allocated to vars and functions. vars are stored as undefined, and functions are stored as a whole with the definitions.
+- In `Code Execution`, executes code one line at a time.
+- When a function is invoked, a new EC is ccreated with its own `Memory` and `Code`.
+- This everything, EC creation, deletion and all is managed by `Call stack`. First, `Global EC` is passed on the stack.
+- Call Stack maintains the order of execution of execution contexts.
+
+
+##### Hoisting
+- we can reference or access the vars and functions before their initialization.
+- Why? beacuse memory is allocated to them in `Creation` phase.
+
+
+```javascript
+var x = 7;
+
+function getName(){
+  console.log('Namaste JavaScript');
+}
+
+getName(); // prints Namaste JavaScript
+console.log(x); // prints 7
+```
+
+```javascript
+
+getName(); // prints Namaste JavaScript
+console.log(x); // prints undefined
+console.log(getName); // prints the definition of the function
+
+var x = 7;
+
+function getName(){
+  console.log('Namaste JavaScript');
+}
+
+```
+
+
+##### undefined vs not defined
+- we know, in `Creation` phase, memory is allocated to vars
+- `undefined` is a special keyword assigned as a placeholder value for the vars in this phase.
+- While, if we try to access something which was not declared in the program, it gives not defined.
