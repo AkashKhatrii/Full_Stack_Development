@@ -210,7 +210,7 @@ The console will look like:
 - JS is s synchronous single-threaded language.
 
 
-#### How JS code is executed?
+##### How JS code is executed?
 - When we run a JS code, EC is created.
 - It is created in 2 phases: `Creation` and `Code Execution`
 - In `Creation`, memory is allocated to vars and functions. vars are stored as undefined, and functions are stored as a whole with the definitions.
@@ -255,3 +255,63 @@ function getName(){
 - we know, in `Creation` phase, memory is allocated to vars
 - `undefined` is a special keyword assigned as a placeholder value for the vars in this phase.
 - While, if we try to access something which was not declared in the program, it gives not defined.
+
+
+##### Scope
+
+```javascript
+function a(){
+  var b = 10;
+  c();
+
+  function c(){
+    console.log(b);  // prints 10
+  }
+}
+
+a();
+console.log(b) // prints not defined
+```
+
+- `c()` is lexically inside `a()` and `a()` is lexically inside the global execution context.
+- whenever an EC is created for a function, a lexical environment is also created.
+- `lexical environment`: local memory + reference to lexical environment of the parent.
+
+
+
+- JS engine tries to find `b` in the local memory of `c()`, but its not present, so then it goes to the lexical environment of its parent `a()` and continues.
+- If we never defined `b` anywhere, then it gives not defined.
+
+
+**This upper part, everything is called scope chain (chain of lexical environments)**
+
+
+##### let & const
+- let & const declarations are hosted but in a different way (they are in temporal dead zone)
+
+```javascript
+console.log(a); // referenceError: cannot access before initialization
+console.log(b); // undefined
+
+let a = 10;
+var b = 100;
+```
+
+**Temporal Dead Zone**
+- time since when the let variable was hoisted and till it is initialized some value.
+
+
+
+##### Block scope & shadowing in JS
+- block is:
+```javascript
+{
+
+
+}
+```
+
+- block groups multiple statements so that we can use it in a place where JS expects a single statement.
+
+- block scope means what all variables and functions we can access inside the block
+- let & const are block scoped, i.e hoisted in a different section called `Block` while var is hoisted in the `Global` section
