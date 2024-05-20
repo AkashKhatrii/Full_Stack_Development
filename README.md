@@ -315,3 +315,82 @@ var b = 100;
 
 - block scope means what all variables and functions we can access inside the block
 - let & const are block scoped, i.e hoisted in a different section called `Block` while var is hoisted in the `Global` section
+
+
+
+##### Closures
+
+```javascript
+function x(){
+  var a = 7;
+  function y(){
+    console.log(a);
+  }
+
+  y(); // prints 7
+}
+```
+
+**This is what closure is☝🏻!**
+
+> Function along with its lexical scope forms a closure.
+
+
+```javascript
+function x(){
+  var a = 7;
+  function y(){
+    console.log(a);
+  }
+  
+  return y;
+}
+
+var z = x();
+console.log(z); // prints function definition
+
+//......
+
+z(); // prints 7!!!
+```
+
+- Here, after `x()` is done exeuting, its EC is vanished and `a` was present in its EC.
+- Now, when `z` is called, it still prints 7. How?? Ans: A function remebers its lexical environment from where it came.
+- So, when `y` is returned from `x()`, not only the function is returned, but a closure is returned and we know, closure encloses function with its lexical environment.
+- And, `y` remembres the reference to `a`.
+
+**So, What is a closure?**
+- Function along with its lexical scope bundled together forms a closure.
+
+
+##### setTimeout + Closures
+
+Suppose, we want to print 1 after 1s, 2 after 2s, and so on till 5. How do we do this?
+
+- Solution:
+
+```javascript
+function x(){
+  for(var i = 1; i <= 5; i ++){
+    setTimeout(function(){
+      console.log(i);
+    }, i * 1000);
+  }
+}
+
+x();
+```
+
+**What is printed on the console?**
+> 6
+> 6
+> 6
+> 6
+> 6
+
+
+**Why?**
+- Because, the function (callback) passed to setTimeout is a closure, it remembers the reference to the variable `i`, and by the time these functions are put on call stack and ran, the value of `i` is changed to 6, therefore 6 is printed.
+
+
+**Solution - use let instead of var**
