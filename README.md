@@ -394,3 +394,133 @@ x();
 
 
 **Solution - use let instead of var**
+
+
+##### First Class Functions
+
+1. Function Statement
+
+```javascript
+function a(){
+  console.log('a called');
+}
+```
+
+This way creating a function is called function statement.
+
+2. Function expression
+  
+```javascript
+var b = function (){
+  console.log('b called');
+}
+```
+
+Here, function acts like a value. We are initializing this value, `b` with a function. And, this is called function expression.
+
+
+###### Difference between function statement and function expression.
+- Major difference is hoisting
+
+```javascript
+a(); // prints a called
+b(); // prints TypeError: b is not defined
+function a(){
+  console.log('a called');
+}
+
+var b = function (){
+  console.log('b called');
+}
+```
+
+- Initially, `b` is treated like any other variable and its value is undefined.
+
+3. Anonymous Function
+- a function without a name
+- Used in a place where functions are used as values
+
+```javascript
+var b = function (){
+  console.log('b called');
+}
+```
+
+4. Named Function Expression
+- similar to function expression
+
+```javascript
+var b = function xyz (){
+  console.log('b called');
+}
+
+xyz(); // will give error
+```
+
+5. First Class Functions
+- The ability of functions to be used as values, to be passed as an argument to another function and can be returned from another functions is known as first class functions. (It is a concept)
+- Ability to be used as values
+
+```javascript
+// One example
+
+var b = function (){
+  return function (){
+
+  };
+}
+
+console.log(b())
+```
+
+
+##### Callback Functions
+
+1. What is a callback function?
+- a function passed as an argument to another function.
+
+```javascript
+function x(){
+}
+
+x(function (){
+
+})
+```
+
+why it is called callback function?
+- it is called later
+- we passed it to the function and it is upto that function when does it call the passed function.
+- we give the responsibility of `y` to `x`
+- it is upto `x` when it calls `y`
+
+
+```javascript
+setTimeout(function (){
+  console.log('timer');
+}, 5000)
+
+function x(y){
+  console.log('x');
+  y();
+}
+
+x(function y(){
+  console.log('y');
+})
+```
+
+> x
+
+> y
+
+> timer
+
+
+**Run this program and look at the call stack**
+> the anonymous function passed to `setTimeout` magically appears on the call stack after some time and is executed.
+
+> Agar pehle hi daal denge call stack par (ie. jab setTimeout declare hua) toh voh call stack par 5s wait karega aur block kar dega main thread ko
+
+> Call stack -----> Main thread.
+
