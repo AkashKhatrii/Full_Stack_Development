@@ -524,3 +524,58 @@ x(function y(){
 
 > Call stack -----> Main thread.
 
+
+##### Asynchronous Javascipt & Even loop
+- JS is a synchronous single threaded language
+- It has one call stack and it can only do one thing at a time
+- This call stack is present inside the JS engine
+
+
+```javascript
+function a(){
+  console.log('a');
+}
+a();
+console.log('End');
+```
+
+> a
+
+> End
+
+
+![async.png](https://github.com/AkashKhatrii/Full_Stack_Development/blob/JavaScript/async.png)
+
+
+- Call stack executes everything that is provided to it, it doesn't wait for anything
+- What if we want to execute something 5s later? Call stack doesn't have a timer, so we can't do it
+
+
+**Web APIs**
+- setTimeout()
+- DOM APIs
+- fetch()
+- localStorage
+- console
+- location
+
+
+- These web APIs are not a part of JavaScript, these are extra stuff provided by the browser and the browser provides access to these to the JS engine where call stack is provided.
+- It is possible to access these with the help of the global object
+- What is the global object ---> window
+- eg. `window.setTimeout`, `window.fetch()`, `window.location`, etc
+
+
+
+**Why do we need callback queue? Why not directly put the callback in the call stack**
+- suppose a user clicks on the button continuously 6-7 times, then these 6-7 callback functions are pushed in the callback queeue, waiting to be executed
+- event loop continuously checks whether the call stack is empty or not, and if it is, and there is some function waiting in the callback queue to be executed, it pushes it on the call stack
+- we need callback queue to queue requests, so that everyone gets a chance toi be executed line by line
+
+![eventLoop.png](https://github.com/AkashKhatrii/Full_Stack_Development/blob/JavaScript/eventLoop.png)
+
+**Micotask Queue**
+- Similar to callback queue, but has higher priority
+- all the cb functions which come through promisies will go in this microtask queue
+- promises and mutation observer goes into this microtask queue
+- all the other cbs go into the callback queue
