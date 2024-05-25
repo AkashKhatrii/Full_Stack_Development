@@ -755,14 +755,19 @@ createOrder(cart)
 **Recap**
 1. Before promise we used to depend on callback functions which would result in 1.) Callback Hell (Pyramid of doom) | 2.) Inversion of control
 2. Inversion of control is overcome by using promise. 
+
   2.1) A promise is an object that represents eventual completion/failure of an asynchronous operation. 
+
   2.2) A promise has 3 states: pending | fulfilled | rejected. 
+
   2.3)  As soon as promise is fulfilled/rejected => It updates the empty object which is assigned undefined in pending state. 
+
   2.4) A promise resolves only once and it is immutable. 
+
   2.5) Using .then() we can control when we call the cb(callback) function. 
 
-3. To avoid callback hell (Pyramid of doom) => We use promise chaining. This way our code expands vertically instead of horizontally. Chaining is done using '.then()'
-4. A very common mistake that developers do is not returning a value during chaining of promises. Always remember to return a value. This returned value will be used by the next .then()
+1. To avoid callback hell (Pyramid of doom) => We use promise chaining. This way our code expands vertically instead of horizontally. Chaining is done using '.then()'
+2. A very common mistake that developers do is not returning a value during chaining of promises. Always remember to return a value. This returned value will be used by the next .then()
 
 
 
@@ -777,8 +782,20 @@ const promise = createOrder(cart);
 promise.then(function (orderId){
   console.log(orderId)
   // procedToPayment(orderId);
+  return orderId;
 })
-
+.then(function (orderId){
+  return proceedToPayment(orderId);
+})
+.then(function (paymentinfo){
+  console.log(paymentInfo);
+})
+.catch(function (err){ // ctaches any error from the above calls
+  console.log(err);
+})
+.then(function (orderId){
+  console.log("No matter what happens, I will definitely be called.");
+})
 
 // producer end
 function createOrder(cart){
@@ -799,9 +816,30 @@ function createOrder(cart){
       resolve(orederId);
     }
   })
+
+  return pr;
 }
 
 function validateCart(cart){
   return true;
 }
+
+function proceedToPayment(orderId){
+  return new Promise(function(resolve, reject){
+    resolve('Payment Successfull');
+  })
+}
 ```
+
+
+
+#### Promise APIs
+1. `Promise.all()`
+2. `Promise.allSettled()`
+3. `Promise.race()`
+4. `Promise.any()`
+
+
+##### Promise.all()
+- used to handle multiple promises together
+- takes array of promises
