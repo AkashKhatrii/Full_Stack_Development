@@ -579,3 +579,79 @@ console.log('End');
 - all the cb functions which come through promisies will go in this microtask queue
 - promises and mutation observer goes into this microtask queue
 - all the other cbs go into the callback queue
+
+
+
+###### JS engine
+
+1. JavaScript runtime environment
+- has everything required to run js code
+- JS Engine, APIs, event loop, callback queue, microtask queue
+- JS Engine is the heat of JRE
+- Browser has JRE, Node.js has JRE, etc
+- APIs are different in different JREs
+- Some common between Browser and Node.js are `console`, `setTimeout`
+
+
+**Different JS engines**
+- Chakra in Internet Explorer, microsoft edge
+- SpiderMonkey in Firefox
+- V8 in Goole Chrome, Node.js, Deno
+
+
+**JS Engine Architecture**
+
+![JsEngine.png](https://github.com/AkashKhatrii/Full_Stack_Development/blob/JavaScript/JsEngine.png)
+
+
+1. Interpretter
+- takes the code and starts executing it line by line
+
+2. Compiler
+- whole code is first compiled into a new code (optimized version) and then it is executed
+
+3. JIT
+- uses both interpretter and compiler
+
+
+**V8 JS Engine**
+
+![V8.png](https://github.com/AkashKhatrii/Full_Stack_Development/blob/JavaScript/V8.png)
+
+
+### Namaste JavaScript 2
+
+Async JS is possible only with the help of callbacks.
+
+#### Callback Hell
+
+Suppose we have an ecommerce website and have the following 4 apis:
+1. `api.createOrder()`
+2. `api.proceedToPayment()`
+3. `api.showOrderSummary()`
+4. `api.updateWallet()`
+
+
+We want these to execute one ftaer the other. As `proceedToPayment` can only be called after creating an order and `showOrderSummary` can only be called once we have proceeded for payment and so on.
+
+
+##### How do we achieve this?
+Ans: Callbacks!
+
+```javascript
+const cart = ["shoes", "pants", "kurta"]
+
+api.createOrder(cart, function (){
+
+  api.proceedToPayment(function (){
+
+    api.showOrderSummary(function (){
+
+      api.updateWallet()
+    })
+  })
+})
+```
+
+##### This is callback hell! One callback inside another and so on.
+
