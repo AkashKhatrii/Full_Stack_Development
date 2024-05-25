@@ -655,3 +655,153 @@ api.createOrder(cart, function (){
 
 ##### This is callback hell! One callback inside another and so on.
 
+
+#### Promises
+
+- Promises are used to handle async operations in JS
+
+
+```javascript
+
+const cart = ['shoes', 'pants', 'kurta']
+
+createOrder(cart) // api: creates an order and returns orderId
+
+proceedToPayment(orderId) // api
+
+// using callbacks
+
+createOrder(cart, function(orderId){
+  proceedToPayment(orderId)
+})
+
+// using promises
+const promise = createOrder(cart)
+
+promise.then(function(orderId){
+  proceedToPayment(orderId)
+})
+
+// or way 2
+createorder(cart).then(function(orderId){
+  proceedToPayment(orderId)
+})
+
+```
+
+**Using callback**
+- it is the responsibility of `createOrder` to create an order and call `proceedToPayment` by passing it the new order id.
+- the issue here is called inversion of control. We have passed the callback function to `createOrder` and blindly trustiong it, as it may never call it or maybe call it twice.
+- We are expecting it to randomly execute our callback, we are just giving the control of our function to other part of the code which we are not aware of. 
+
+
+**Using promises**
+- `const promise = createOrder(cart)` - whenever the JS engine executes this line, this will return us a Promise (empty object for now) and the rest of the program will continue executing
+- after 5s, 6s or whatever time it takes, this Promise object will be filled automatically with data (orderId)
+- And once we have this data, the callback inside `promise.then()` will be automatically executed.
+
+
+
+**How is it better?**
+- In first case, we were passing the cb function to another function and in second case, we are attaching the cb function to a promise object
+- it will call the cb function for sure and just once as opposed to the first case where we don't trust the `createorder` function.
+
+
+```javascript
+const GITHUB_API = 'https://...';
+
+const user = fetch(GITHUB_API);
+console.log(user); 
+
+user.then(function(data){
+  console.log(data);
+})
+```
+
+- Initially, the promise will be in pending state and it's result will be undefined.
+- Once we have got the data, the promise state changes to fulfilled
+- promise objects are immutable
+
+
+**Interviewer: What is a promise?**
+- Ans: (one ans: placeholder for a future value) mdn docs: A Promise is an object repressenting the eventual completion (kabhi na kabhi toh complete hoga) or failure of an asynchronous operation.
+
+
+**Promise chaining**
+- avoids callback hell
+
+```javascript
+createorder(cart).then(function(orderId){
+  return proceedToPayment(orderId)
+})
+.then(function(paymentInfo){
+  return showOrderSummary(paymentInfo)
+})
+.then(function (paymentInfo){
+  return updateWalletBalance(paymentInfo);
+})
+
+// or using arrow functions
+
+createOrder(cart)
+.then((orderId) => proceedToPayment(orderId))
+.then((paymentInfo) => showOrderSummary(paymentInfo))
+.then((paymentInfo) => updateWalletBalance(paymentInfo))
+
+
+```
+- Always use `return` when we want to use the data below.
+
+**Recap**
+1. Before promise we used to depend on callback functions which would result in 1.) Callback Hell (Pyramid of doom) | 2.) Inversion of control
+2. Inversion of control is overcome by using promise. 
+  2.1) A promise is an object that represents eventual completion/failure of an asynchronous operation. 
+  2.2) A promise has 3 states: pending | fulfilled | rejected. 
+  2.3)  As soon as promise is fulfilled/rejected => It updates the empty object which is assigned undefined in pending state. 
+  2.4) A promise resolves only once and it is immutable. 
+  2.5) Using .then() we can control when we call the cb(callback) function. 
+
+3. To avoid callback hell (Pyramid of doom) => We use promise chaining. This way our code expands vertically instead of horizontally. Chaining is done using '.then()'
+4. A very common mistake that developers do is not returning a value during chaining of promises. Always remember to return a value. This returned value will be used by the next .then()
+
+
+
+#### Creating a Promise, Chaining and Error Handling
+
+
+```javascript
+const cart = ['shoes', 'pants', 'kurta'];
+
+const promise = createOrder(cart);
+
+promise.then(function (orderId){
+  console.log(orderId)
+  // procedToPayment(orderId);
+})
+
+
+// producer end
+function createOrder(cart){
+  const pr = new Promise(function(resolve, reject){
+
+    // createOrder
+    // validateCart
+    // orderId
+
+    if (!validateCard(cart)){
+      const err = new Error('Cart is not valid')
+      reject(err);
+    }
+
+    // logic for createOrder
+    const orderId = '12345'; // dummy id
+    if(orderId){
+      resolve(orederId);
+    }
+  })
+}
+
+function validateCart(cart){
+  return true;
+}
+```
