@@ -843,3 +843,175 @@ function proceedToPayment(orderId){
 ##### Promise.all()
 - used to handle multiple promises together
 - takes array of promises
+- `Promise.all([p1, p2, p3])`, suppose the promises take 3s, 1s and 2s respectively to finish and provided the result
+- The result will be an array of 3 values, 1 value from every promise `[val1, val2, val3]` and this result will be provided to us after 3s as `p1` takes 3s to complete.
+- Once all the promises are fulfilled, then only results are provided.
+- If any one of the promise is rejected, then `Promise.all()` will throw an error immediately. It will not even wait for other promises.
+- So, its kind of all or none.
+
+
+##### Promise.allSettled()
+- the results are same if all promises are fulfilled.
+- But if any of the promise is rejected, it waits for other promises to be settled and give all the results
+- Suppose `p2` was rejected, then the result will be `[val1, err2, val3]`
+
+
+##### Promise.race()
+- again, takes an array of promises
+- As soon as first promise is resolved, it will give the value of that promise
+- Suppose `p2` was resolved in 1s, then it will give `val2`
+- Whatever promise settles first, it will give result for that
+- So, its kind of a race
+
+
+##### Promise.any()
+- takes an array of promises
+- very similar to race, only difference is it will wait for the first success
+- In race, even if there was error, it was returning error
+- Suppose `p2` gave error (rejected), it will not do anything but wait for a success promise
+- Now, suppose `p3` was success, then the returned value will be `val3` but if `p3` also fails, it will wait for another one
+- If all of the promises fail, then the result will be Aggregate Error `[err1, err2, err3]`
+
+
+##### Recap
+- `.all()` - if all are successfult, will return an array of all the values. Waits for all the promises to finish and then only gives result. If any one of them fails, it will not go ahead and will quickly give an error.
+- `.allSettled` - same as `.all()` in success case, but in case of reject, it will still wait for all promises to finish and then gives result
+- `.race()` - kind of race. Will return as soon as the first settled promise(irrespective if it is resolved or rejected) 
+- `.any()` - will return the result of first settled success (resolved) promise. Once it gets the first success, it will quickly give the result.
+
+
+##### Promise world Lingos (Very inmp for interviews)
+
+- settled - meaning get the result and the result can be anything, resolve or reject, success or failure, fulfilled or rejected
+- settled doen't mean success!
+
+##### Code
+
+```javascript
+const p1 = new Promise((resolve, reject) => {
+  setTimeout(() => resolve('P1 success'), 3000);
+})
+
+const p2 = new Promise((resolve, reject) => {
+  setTimeout(() => resolve('P2 success'), 1000);
+})
+
+const p3 = new Promise((resolve, reject) => {
+  setTimeout(() => resolve('P3 success'), 2000);
+})
+
+Promise.all([p1, p2, p3]).then(res => {
+  console.log(res);
+});
+
+Promise.allSettled([p1, p2, p3]).then(res => {
+  console.log(res);
+});
+
+Promise.race([p1, p2, p3]).then(res => {
+  console.log(res);
+});
+
+Promise.any([p1, p2, p3]).then(res => {
+  console.log(res);
+});
+```
+
+
+### Async-Await
+
+**async**
+- keyword used to create an async function
+
+```javascript
+async function getData(){
+  return "Namaste"
+}
+
+const data = getData();
+console,log(data); // promise
+
+data.then(res => {
+  console.log(res); // prints Namaste
+})
+```
+
+##### How is this function different from normal functions
+- async function always returns a promise
+- either you return a promise, and if not, then whatever value we return, JS wraps it inside a promise and returns it
+
+
+**async with await**
+- used together to handle promises
+- await can only be used inside an async function
+- we write await in front of a promise and it resolves the promise.
+
+```javascript
+
+// Without async await
+const p = new Promie((resolve, reject) => {
+  resolve('promise resolved');
+})
+
+function getData(){
+  p.then(res => console.log(res)) // handling promise
+}
+
+getData(); // prints promise resolved
+
+
+// With async await
+
+async function handlePromise(){
+  const val = await p; // handling promise (await instead of .then, val will contain the value of this resolved promise)
+
+  console.log(val);
+
+}
+
+handlePromise(); // prints promise resolved
+
+```
+
+
+```javascript
+const p = new Promie((resolve, reject) => {
+  setTimeout(() => {
+    resolve('promise resolved');
+  }, 10000)
+})
+
+const p2 = new Promie((resolve, reject) => {
+  setTimeout(() => {
+    resolve('promise2 resolved');
+  }, 5000)
+})
+
+function getData(){
+
+  // JS Engine will not wait for promise to be resolved
+  p.then(res => console.log(res)) // handling promise
+  console.log('Namaste JavaScript');
+}
+
+getData(); // first prints Namaste JavaScript and then promise resolved after 10s
+
+async function handlePromise(){
+  // JS engine will wait for promise to resolve on the below line
+  console.log("Hello World");
+  const val = await p;
+
+  // will only come to this line once the promise is resolved
+  console.log("Namaset Javascript");
+  console.log(val);
+
+  const val2 = await p2;
+
+  // will only come to this line once the promise is resolved
+  console.log("Namaste Javascript");
+  console.log(val2);
+
+}
+
+handlePromise();
+```
